@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Топ самых слабых игр</h2>
+  <p class="muted">Отбираются игры минимум со 100 отзывами; показатель слабости учитывает
+     низкий процент положительных отзывов и долю негатива.</p>
+  <table>
+    <tr><th>#</th><th>Игра</th><th>Жанры</th><th>Год</th><th>Рейтинг</th>
+        <th>Отзывов</th><th>Негативных</th><th>Показатель слабости</th></tr>
+    {% for g in found %}
+    <tr><td>{{ loop.index }}</td><td><b>{{ g.name }}</b></td><td>{{ g.genres_str }}</td>
+        <td>{{ g.release_year }}</td><td>{{ g.rating }} %</td><td>{{ g.total_reviews }}</td>
+        <td>{{ g.total_negative }}</td><td>{{ '%.1f'|format(g.weakness) }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

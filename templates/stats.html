@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Статистика по запросам</h2>
+  <p>Всего запросов: <b>{{ qstats.total }}</b>, уникальных пользователей:
+     <b>{{ qstats.users }}</b></p>
+  <div class="two">
+    <div>
+      <h3>Самые частые запросы</h3>
+      <table><tr><th>Запрос</th><th>Раз</th></tr>
+      {% for q in qstats.top_queries %}<tr><td>{{ q.query }}</td><td>{{ q.cnt }}</td></tr>{% endfor %}
+      </table>
+    </div>
+    <div>
+      <h3>Самые востребованные жанры</h3>
+      <table><tr><th>Жанр</th><th>Упоминаний</th></tr>
+      {% for g, c in qstats.top_genres %}<tr><td>{{ g }}</td><td>{{ c }}</td></tr>{% endfor %}
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Последние запросы</h3>
+  <table><tr><th>Время</th><th>Запрос</th><th>Лучший результат</th><th>Источник</th></tr>
+  {% for r in qstats.recent %}
+  <tr><td>{{ r.created }}</td><td>{{ r.query }}</td><td>{{ r.top_name }}</td><td>{{ r.source }}</td></tr>
+  {% endfor %}
+  </table>
+</section>
+
+<section class="card">
+  <h3>Статистика по отзывам</h3>
+  {% if rstats %}
+  <table><tr><th>Игра</th><th>Отзывов</th><th>Средняя оценка</th></tr>
+  {% for s in rstats %}<tr><td>{{ s.name }}</td><td>{{ s.cnt }}</td><td>{{ s.avg_rating }}</td></tr>{% endfor %}
+  </table>
+  {% else %}<p class="muted">Отзывов пока нет.</p>{% endif %}
+</section>
+{% endblock %}

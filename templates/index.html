@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Подбор игр по текстовому запросу</h2>
+  <p class="muted">В каталоге {{ games_count }} игр Steam. Опишите, что вы хотите:
+     жанр («шутер», «рпг», «стратегия», «инди») и пожелания («популярная», «новая»,
+     «дешёвая», «бесплатная», «высоко оценённая», «кооператив», «одиночная»).</p>
+  <form method="post" class="row">
+    <input type="text" name="query" value="{{ query }}" placeholder="например: дешёвая новая инди рпг с кооперативом" required>
+    <select name="top_n">
+      <option value="5" selected>топ-5</option>
+      <option value="10">топ-10</option>
+    </select>
+    <button type="submit">Подобрать</button>
+  </form>
+  <div class="examples">
+    Примеры: <a href="#" class="ex">популярный бесплатный шутер</a> ·
+    <a href="#" class="ex">дешёвая инди стратегия с высоким рейтингом</a> ·
+    <a href="#" class="ex">новая кооперативная игра</a> ·
+    <a href="#" class="ex">самые слабые гонки</a>
+  </div>
+</section>
+
+{% if parsed %}
+<section class="card">
+  <h3>Как разобран запрос</h3>
+  <p>Распознанные жанры:
+     {% if parsed.genres %}<b>{{ parsed.genres|join(', ') }}</b>{% else %}<i>не найдены</i>{% endif %}<br>
+     Распознанные характеристики:
+     {% if parsed.features %}<b>{{ parsed.features|map(attribute=3)|join(', ') }}</b>{% else %}<i>не найдены</i>{% endif %}<br>
+     Режим: {{ 'поиск самых слабых игр' if parsed.mode == 'weak' else 'поиск лучших совпадений' }}</p>
+</section>
+{% endif %}
+
+{% if results %}
+<section class="card" id="results">
+  <h3>Результат подбора</h3>
+  <table>
+    <tr><th>#</th><th>Игра</th><th>Жанры</th><th>Год</th><th>Цена</th>
+        <th>Рейтинг</th><th>Онлайн</th><th>Баллы</th><th>Совместимость</th></tr>
+    {% for r in results %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><b>{{ r.name }}</b><div class="why">{{ r.why|join('; ') }}</div></td>
+      <td>{{ r.genres }}</td>
+      <td>{{ r.year }}</td>
+      <td>{{ '%.2f'|format(r.price) }} $</td>
+      <td>{{ r.rating }} %</td>
+      <td>{{ '%.0f'|format(r.online) }}</td>
+      <td>{{ r.score }}</td>
+      <td><div class="bar"><span style="width: {{ r.match }}%"></span></div>{{ r.match }} %</td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.querySelectorAll('.ex').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.querySelector('input[name=query]').value = a.textContent.trim();
+    });
+  });
+  {% if results %}playBeep();{% endif %}
+</script>
+{% endblock %}

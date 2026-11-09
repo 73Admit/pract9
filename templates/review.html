@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Оставить отзыв об игре</h2>
+  <form method="post" class="row">
+    <input type="number" name="app_id" placeholder="steam_appid игры" required>
+    <select name="rating">
+      {% for i in range(1, 6) %}<option value="{{ i }}">{{ i }} из 5</option>{% endfor %}
+    </select>
+    <input type="text" name="text" placeholder="текст отзыва">
+    <button type="submit">Сохранить</button>
+  </form>
+  <p class="muted">Идентификатор игры можно посмотреть на странице поиска по названию.</p>
+</section>
+
+<section class="card">
+  <h3>Статистика по играм</h3>
+  {% if stats %}
+  <table>
+    <tr><th>Игра</th><th>Отзывов</th><th>Средняя оценка</th><th>Мин</th><th>Макс</th></tr>
+    {% for s in stats %}
+    <tr><td>{{ s.name }}</td><td>{{ s.cnt }}</td><td><b>{{ s.avg_rating }}</b></td>
+        <td>{{ s.min_rating }}</td><td>{{ s.max_rating }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">Отзывов пока нет.</p>{% endif %}
+</section>
+
+<section class="card">
+  <h3>Последние отзывы</h3>
+  {% if reviews %}
+  <table>
+    <tr><th>Дата</th><th>Пользователь</th><th>Игра</th><th>Оценка</th><th>Текст</th></tr>
+    {% for r in reviews %}
+    <tr><td>{{ r.created }}</td><td><code>{{ r.user_id }}</code></td><td>{{ r.name }}</td>
+        <td>{{ r.rating }}</td><td>{{ r.text }}</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">Отзывов пока нет.</p>{% endif %}
+</section>
+{% endblock %}

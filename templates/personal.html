@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Персональные рекомендации</h2>
+  <p>{{ note }}</p>
+  <form method="post" action="{{ url_for('train') }}">
+    <button type="submit">Обучить модель предпочтений на накопленных отзывах</button>
+  </form>
+</section>
+
+{% if recs %}
+<section class="card">
+  <h3>Рекомендуем вам</h3>
+  <table>
+    <tr><th>#</th><th>Игра</th><th>Жанры</th><th>Год</th><th>Цена</th><th>Рейтинг</th><th>Соответствие</th></tr>
+    {% for r in recs %}
+    <tr><td>{{ loop.index }}</td><td><b>{{ r.name }}</b><div class="why">{{ r.why|join('; ') }}</div></td>
+        <td>{{ r.genres }}</td><td>{{ r.year }}</td><td>{{ '%.2f'|format(r.price) }} $</td>
+        <td>{{ r.rating }} %</td>
+        <td><div class="bar"><span style="width: {{ r.match }}%"></span></div>{{ r.match }} %</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+
+<section class="card">
+  <h3>Ваша история</h3>
+  <div class="two">
+    <div>
+      <h4>Запросы</h4>
+      <table><tr><th>Время</th><th>Запрос</th></tr>
+      {% for q in history.queries %}<tr><td>{{ q.created }}</td><td>{{ q.query }}</td></tr>{% endfor %}
+      </table>
+    </div>
+    <div>
+      <h4>Отзывы</h4>
+      <table><tr><th>Игра</th><th>Оценка</th></tr>
+      {% for r in history.reviews %}<tr><td>{{ r.name }}</td><td>{{ r.rating }}</td></tr>{% endfor %}
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>{% if recs %}playBeep();{% endif %}</script>
+{% endblock %}

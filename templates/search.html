@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Поиск игры по названию</h2>
+  <form method="get" class="row">
+    <input type="text" name="name" value="{{ name }}" placeholder="например: Counter" required>
+    <button type="submit">Найти</button>
+  </form>
+</section>
+{% if name %}
+<section class="card">
+  <h3>Найдено игр: {{ found|length }}</h3>
+  {% if found %}
+  <table>
+    <tr><th>Игра</th><th>Жанры</th><th>Год</th><th>Цена</th><th>Рейтинг</th><th>Отзывов</th><th>Онлайн</th><th>appid</th></tr>
+    {% for g in found %}
+    <tr><td><b>{{ g.name }}</b></td><td>{{ g.genres_str }}</td><td>{{ g.release_year }}</td>
+        <td>{{ '%.2f'|format(g.price) }} $</td><td>{{ g.rating }} %</td>
+        <td>{{ g.total_reviews }}</td><td>{{ '%.0f'|format(g.avg_online) }}</td>
+        <td><code>{{ g.steam_appid }}</code></td></tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="muted">Ничего не найдено.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

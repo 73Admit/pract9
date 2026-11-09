@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Поиск по диапазону характеристик</h2>
+  <p class="muted">Например: цена от 0 до 5 долларов, рейтинг от 90 до 100 процентов,
+     средний онлайн от 1000 до 50000 человек.</p>
+  <form method="get" class="row">
+    <select name="field">
+      {% for key, label in fields.items() %}
+      <option value="{{ key }}" {% if key == field %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <input type="number" step="any" name="low" value="{{ low if low is not none else '' }}" placeholder="от" required>
+    <input type="number" step="any" name="high" value="{{ high if high is not none else '' }}" placeholder="до" required>
+    <button type="submit">Найти</button>
+  </form>
+</section>
+{% if found %}
+<section class="card">
+  <h3>Найдено игр: {{ found|length }}</h3>
+  <table>
+    <tr><th>Игра</th><th>Жанры</th><th>Год</th><th>Цена</th><th>Рейтинг</th><th>Отзывов</th><th>Онлайн</th></tr>
+    {% for g in found %}
+    <tr><td><b>{{ g.name }}</b></td><td>{{ g.genres_str }}</td><td>{{ g.release_year }}</td>
+        <td>{{ '%.2f'|format(g.price) }} $</td><td>{{ g.rating }} %</td>
+        <td>{{ g.total_reviews }}</td><td>{{ '%.0f'|format(g.avg_online) }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endif %}
+{% endblock %}

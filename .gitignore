@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+data/recsys.db
+data/like_model.pkl
+.venv/
