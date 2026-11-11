@@ -36,6 +36,10 @@ TOKEN = os.environ.get('BOT_TOKEN', '')
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s')
+# Библиотека httpx пишет в лог полный URL запроса вместе с токеном бота,
+# поэтому её сообщения приглушаем: в журнал не должны попадать секреты.
+logging.getLogger('httpx').setLevel(logging.WARNING)
+logging.getLogger('telegram.ext.Updater').setLevel(logging.WARNING)
 log = logging.getLogger('recsys-bot')
 
 GAMES = recommender.load_games()
@@ -152,8 +156,8 @@ async def cmd_review(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
 async def cmd_my(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     recs, note = personal.personal_recommend(uid(update), GAMES)
-    await update.message.reply_text(note + '\n\n' + format_results(recs),
-                                    parse_mode=ParseMode.HTML)
+    text = note if not recs else note + '\n\n' + format_results(recs)
+    await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
 async def cmd_stats(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
