@@ -1,6 +1,16 @@
 .env
 __pycache__/
 *.pyc
-data/recsys.db
-data/like_model.pkl
 .venv/
+
+# база создаётся при первом запуске, наполняется командой python seed_demo.py
+data/recsys.db
+
+# модель предпочтений обучается командой python seed_demo.py
+data/like_model.pkl
+
+# скриншоты для отчёта Word — в проекте не нужны
+img/
+
+# отчёт Word сдаётся отдельно, в репозитории не нужен
+*.docx
